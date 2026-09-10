@@ -4,20 +4,69 @@ import { POEMS_DATABASE } from './poems-data.js'
 
 export { POEMS_DATABASE }
 
-// 每个关卡（关卡号从 1 开始）的难度设置：
-//   前 4 关   4 个选项，干扰项优先取字数相同的句子
-//   5-8 关    5 个选项
-//   9 关以后  6 个选项，干扰项不再限制字数（更难一眼排除）
-export function getLevelConfig(level) {
-    if (level <= 4) {
-        return { optionCount: 4, sameLength: true }
+// 三档难度：诗词本身由易到难，机制也逐档加难
+//   初级：五言短诗，4 个选项，干扰项与正确答案字数相同（可以靠字数先排除一部分）
+//   中级：七言绝句，5 个选项，干扰项仍然同字数
+//   高级：律诗与词（8 句以上），6 个选项，干扰项不再限制字数，只能靠内容判断
+export const POETRY_DIFFICULTIES = {
+    beginner: {
+        key: 'beginner',
+        name: '初级',
+        subtitle: '五言短诗',
+        description: '4 个选项，诗句短、上手快',
+        tier: 'beginner',
+        levels: 10,
+        optionCount: 4,
+        sameLength: true
+    },
+    intermediate: {
+        key: 'intermediate',
+        name: '中级',
+        subtitle: '七言绝句',
+        description: '5 个选项，七言名句，干扰项更像',
+        tier: 'intermediate',
+        levels: 10,
+        optionCount: 5,
+        sameLength: true
+    },
+    advanced: {
+        key: 'advanced',
+        name: '高级',
+        subtitle: '律诗与词',
+        description: '6 个选项，长诗长调，不给字数线索',
+        tier: 'advanced',
+        levels: 10,
+        optionCount: 6,
+        sameLength: false
+    }
+}
+
+// 取某档难度的配置，非法值回落到初级
+export function getDifficulty(difficulty) {
+    return POETRY_DIFFICULTIES[difficulty] || POETRY_DIFFICULTIES.beginner
+}
+
+// 取某档难度的题目配置（选项数量、是否按字数筛干扰项）
+export function getLevelConfig(difficulty) {
+    const config = getDifficulty(difficulty)
+
+    return {
+        optionCount: config.optionCount,
+        sameLength: config.sameLength
+    }
+}
+
+// 取某档难度的关卡诗词：洗完牌取前 N 首，每局顺序不同
+export function getLevelPoems(difficulty) {
+    const config = getDifficulty(difficulty)
+    const pool = [...getPoemsByDifficulty(config.tier)]
+
+    for (let i = pool.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [pool[i], pool[j]] = [pool[j], pool[i]]
     }
 
-    if (level <= 8) {
-        return { optionCount: 5, sameLength: true }
-    }
-
-    return { optionCount: 6, sameLength: false }
+    return pool.slice(0, Math.min(config.levels, pool.length))
 }
 
 // 干扰选项数据库 - 用于生成错误选项

@@ -7,6 +7,8 @@
 // 需要先启动静态服务器，例如：python3 -m http.server 5181 --directory dist
 import process from 'node:process'
 
+import { getDifficulty, getPoemsByDifficulty } from '../games/poetry/data/poems.js'
+
 const playwrightModule = process.env.PLAYWRIGHT_MODULE || 'playwright'
 const playwright = await import(playwrightModule)
 const chromium = playwright.chromium || playwright.default?.chromium
@@ -379,18 +381,16 @@ for (const [level, type, pieces] of [
     blanks: document.querySelectorAll('.missing-line, .blank-line').length
   }))
 
-  // 这个游戏点选选项后会自动提交答案；连续答完 12 关看是否进入结算界面
+  // 这个游戏点选选项后会自动提交答案；连续答完 10 关看是否进入结算界面
   const levels = []
 
-  for (let round = 1; round <= 12; round += 1) {
-    const expectedOptions = round <= 4 ? 4 : round <= 8 ? 5 : 6
-
+  for (let round = 1; round <= 10; round += 1) {
     await page.waitForFunction(
       expected =>
         !document.querySelector('.completion-container') &&
         document.querySelectorAll('.option-btn').length === expected.options &&
         window.app.currentLevel === expected.level,
-      { level: round, options: expectedOptions }
+      { level: round, options: 4 }
     )
 
     await page.evaluate(() => {
@@ -438,14 +438,69 @@ for (const [level, type, pieces] of [
     problems,
     question.options === 4 &&
       levels.map(item => item.level).join(',') ===
-        '1,2,3,4,5,6,7,8,9,10,11,12' &&
-      levels.map(item => item.options).join(',') ===
-        '4,4,4,4,5,5,5,5,6,6,6,6' &&
-      completion.score === 120 &&
-      completion.correct === 12 &&
+        '1,2,3,4,5,6,7,8,9,10' &&
+      levels.every(item => item.options === 4) &&
+      completion.score === 100 &&
+      completion.correct === 10 &&
       completion.hasBackLink
   )
   await context.close()
+}
+
+// 古诗词：中级 / 高级要用更难的诗词，选项也要更多
+{
+  const detail = {}
+  const problems = []
+
+  for (const key of ['intermediate', 'advanced']) {
+    const config = getDifficulty(key)
+    const tierTitles = new Set(
+      getPoemsByDifficulty(config.tier).map(poem => poem.title)
+    )
+    const { context, page, problems: pageProblems } = await openPage(
+      '/games/poetry/'
+    )
+
+    await page.waitForFunction(() => window.app, null, { timeout: 20000 })
+    await page.click(`.difficulty-btn[data-level="${key}"]`)
+    await page.waitForFunction(
+      expected => document.querySelectorAll('.option-btn').length === expected,
+      config.optionCount,
+      { timeout: 15000 }
+    )
+
+    detail[key] = await page.evaluate(() => ({
+      difficulty: window.app.difficulty,
+      level: window.app.currentLevel,
+      maxLevels: window.app.maxLevels,
+      title: window.app.currentPoem.title,
+      author: window.app.currentPoem.author,
+      lines: window.app.currentPoem.content.length,
+      options: document.querySelectorAll('.option-btn').length,
+      header: document.getElementById('currentLevel').textContent
+    }))
+    detail[key].inTier = tierTitles.has(detail[key].title)
+    problems.push(...pageProblems)
+
+    await context.close()
+  }
+
+  report(
+    'poetry-difficulties',
+    detail,
+    problems,
+    problems.length === 0 &&
+      detail.intermediate.difficulty === 'intermediate' &&
+      detail.intermediate.options === 5 &&
+      detail.intermediate.inTier === true &&
+      detail.intermediate.header.includes('中级') &&
+      detail.advanced.difficulty === 'advanced' &&
+      detail.advanced.options === 6 &&
+      detail.advanced.inTier === true &&
+      detail.advanced.header.includes('高级') &&
+      detail.advanced.lines >= 8 &&
+      detail.advanced.maxLevels === 10
+  )
 }
 
 // 布局检查：返回大厅入口可点、竖屏舞台比例正常、页面没有横向溢出

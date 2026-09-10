@@ -1,6 +1,7 @@
 import {
+    getDifficulty,
     getLevelConfig,
-    getPoemsByDifficulty,
+    getLevelPoems,
     preparePoemForRepair
 } from '../data/poems.js';
 
@@ -21,7 +22,8 @@ class PoemLearningApp {
         
         // 十关挑战相关
         this.currentLevel = 1;
-        this.maxLevels = 12;
+        this.maxLevels = 10;
+        this.difficulty = 'beginner';
         this.levelPoems = []; // 存储按字数排序的诗词
         this.completedLevels = 0;
         
@@ -117,11 +119,11 @@ class PoemLearningApp {
         const currentPoem = this.levelPoems[this.currentLevel - 1];
         if (currentPoem) {
             // 重新准备诗词修复数据，生成新的选项
-        this.currentPoem = preparePoemForRepair(
-            currentPoem,
-            getLevelConfig(this.currentLevel)
-        );
-        if (this.currentPoem) {
+            this.currentPoem = preparePoemForRepair(
+                currentPoem,
+                getLevelConfig(this.difficulty)
+            );
+            if (this.currentPoem) {
             // 更新界面显示新题目
                 this.updateGameInterface();
                 console.log('重新出题 - 当前关卡:', this.currentLevel, '新题目:', this.currentPoem);
@@ -169,27 +171,31 @@ class PoemLearningApp {
 
     // 开始游戏
     startGame(difficulty) {
-        console.log('开始游戏，难度:', difficulty);
-        
-        if (difficulty === 'beginner') {
-            this.startBeginnerGame();
-        } else {
-            // 其他难度暂未实现
-            alert('该难度正在开发中，敬请期待！');
-            return;
-        }
+        const config = getDifficulty(difficulty);
+        console.log('开始游戏，难度:', config.name);
 
-        this.showScreen('game');
-        this.gameStats.startTime = new Date();
-        this.gameStats.correct = 0;
-        this.gameStats.total = 0;
+        // 每次开局都重置进度，并按所选难度重新抽题
+        this.difficulty = config.key;
+        this.currentLevel = 1;
+        this.completedLevels = 0;
         this.score = 0;
+        this.selectedOption = null;
+        this.levelPoems = [];
+        this.gameStats = {
+            correct: 0,
+            total: 0,
+            startTime: new Date()
+        };
+
+        this.initializeLevelPoems();
         this.updateScore();
+        this.startCurrentLevel();
+        this.showScreen('game');
     }
 
-    // 开始初级游戏（诗句修复）
-    startBeginnerGame() {
-        console.log('🎯 startBeginnerGame被调用');
+    // 开始当前关卡（诗句修复）
+    startCurrentLevel() {
+        console.log('🎯 startCurrentLevel被调用');
         console.log('📚 当前levelPoems长度:', this.levelPoems.length);
         console.log('🎮 当前关卡:', this.currentLevel);
         
@@ -220,7 +226,7 @@ class PoemLearningApp {
         console.log('🔧 准备诗词修复数据');
         this.currentPoem = preparePoemForRepair(
             currentPoem,
-            getLevelConfig(this.currentLevel)
+            getLevelConfig(this.difficulty)
         );
         if (!this.currentPoem) {
             console.error('❌ 无法准备诗词修复数据');
@@ -237,38 +243,26 @@ class PoemLearningApp {
         // 更新关卡显示
         const currentLevelElement = document.getElementById('currentLevel');
         if (currentLevelElement) {
-            currentLevelElement.textContent = `第${this.currentLevel}关 / 共${this.maxLevels}关`;
+            const difficultyName = getDifficulty(this.difficulty).name;
+            currentLevelElement.textContent =
+                `${difficultyName} · 第${this.currentLevel}关 / 共${this.maxLevels}关`;
             console.log('📊 关卡显示已更新');
         } else {
             console.warn('⚠️ 找不到currentLevel元素');
         }
         
-        console.log('🎉 startBeginnerGame执行完成');
+        console.log('🎉 本关准备完成');
     }
 
-    // 初始化关卡诗词：三个难度档各随机抽 4 首，拼成由易到难的 12 关
+    // 初始化关卡诗词：按当前难度洗牌抽题
     initializeLevelPoems() {
-        const tiers = [
-            { name: 'beginner', count: 4 },
-            { name: 'intermediate', count: 4 },
-            { name: 'advanced', count: 4 }
-        ];
-
-        this.levelPoems = tiers.flatMap(tier => {
-            const pool = [...getPoemsByDifficulty(tier.name)];
-
-            // 每局洗牌后取前 N 首，重玩时题目会不一样
-            for (let i = pool.length - 1; i > 0; i -= 1) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [pool[i], pool[j]] = [pool[j], pool[i]];
-            }
-
-            return pool.slice(0, tier.count);
-        });
-
+        this.levelPoems = getLevelPoems(this.difficulty);
         this.maxLevels = this.levelPoems.length;
 
-        console.log('关卡诗词已生成:', this.levelPoems.map(p => p.title));
+        console.log(
+            `${getDifficulty(this.difficulty).name}难度题目已生成:`,
+            this.levelPoems.map(p => p.title)
+        );
     }
 
     // 更新游戏界面
@@ -542,7 +536,7 @@ class PoemLearningApp {
         this.currentLevel++;
         
         // 开始新的游戏
-        this.startBeginnerGame();
+        this.startCurrentLevel();
     }
 
     // 显示通关完成信息
@@ -554,7 +548,7 @@ class PoemLearningApp {
             <div class="completion-container">
                 <div class="completion-header">
                     <h2>🎉 恭喜通关！</h2>
-                    <p>您已成功完成所有${this.maxLevels}关古诗词挑战！</p>
+                    <p>您已成功完成${getDifficulty(this.difficulty).name}难度的全部${this.maxLevels}关！</p>
                 </div>
                 
                 <div class="completion-stats">
@@ -599,7 +593,8 @@ class PoemLearningApp {
         // 重置游戏状态（保留积分）
         this.currentLevel = 1;
         this.completedLevels = 0;
-        // 保留积分不清零：this.score = 0;
+        // 新的一局从 0 分算起，难度保持不变
+        this.score = 0;
         this.gameStats = {
             correct: 0,
             total: 0,
@@ -607,10 +602,12 @@ class PoemLearningApp {
         };
         this.selectedOption = null;
         this.levelPoems = []; // 清空关卡诗词，重新初始化
+        this.updateScore();
         
-        console.log('✅ 游戏状态已重置（积分保留）:', {
+        console.log('✅ 游戏状态已重置:', {
             currentLevel: this.currentLevel,
             score: this.score,
+            difficulty: this.difficulty,
             levelPoemsLength: this.levelPoems.length
         });
         
@@ -710,8 +707,8 @@ class PoemLearningApp {
             }
         }
         
-        console.log('🚀 开始调用startBeginnerGame');
-        this.startBeginnerGame();
+        console.log('🚀 开始进入当前关卡');
+        this.startCurrentLevel();
         console.log('📊 更新分数显示');
         this.updateScore();
     }
