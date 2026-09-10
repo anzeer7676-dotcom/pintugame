@@ -48,12 +48,19 @@ export default async function () {
   // 计时条 / 提示 / 重玩 / 拼图块边框
   await loadSpriteSheet('misc-2')
 
+  // 15 张拼图并行加载：串行下载在慢网络下会把首屏拖到十几秒
+  const jobs = []
+
   for (let i = 0; i < PUZZLE_COUNT; i++) {
     for (const level of PUZZLE_LEVELS) {
-      await loadBaseTexture(
-        `${config.cdn}/static/puzzle/${level}/${i}.jpg`,
-        `${level}/${i}.jpg`
+      jobs.push(
+        loadBaseTexture(
+          `${config.cdn}/static/puzzle/${level}/${i}.jpg`,
+          `${level}/${i}.jpg`
+        )
       )
     }
   }
+
+  await Promise.all(jobs)
 }

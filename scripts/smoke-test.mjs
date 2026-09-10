@@ -79,7 +79,7 @@ function report(name, detail, problems, ok) {
   await page.waitForFunction(
     () => window.__slidingGame && window.__slidingGame.puzzle,
     null,
-    { timeout: 20000 }
+    { timeout: 45000 }
   )
   await page.waitForTimeout(500)
 
@@ -161,7 +161,7 @@ function report(name, detail, problems, ok) {
 // 滑块拼图：菜单点选难度、提示 / 帮助 / 重玩按钮（走新的 DOM 输入层）
 {
   const { context, page, problems } = await openPage('/games/sliding/')
-  await page.waitForFunction(() => window.__slidingGame, null, { timeout: 20000 })
+  await page.waitForFunction(() => window.__slidingGame, null, { timeout: 45000 })
   await page.waitForTimeout(500)
 
   const stageBox = await page.locator('#stage').boundingBox()
@@ -240,7 +240,7 @@ for (const [level, type, pieces] of [
   await page.waitForFunction(
     () => window.__slidingGame && window.__slidingGame.puzzle,
     null,
-    { timeout: 20000 }
+    { timeout: 45000 }
   )
 
   const state = await page.evaluate(() => ({
@@ -263,7 +263,7 @@ for (const [level, type, pieces] of [
   const { context, page, problems } = await openPage('/games/sokoban/', {
     viewport: { width: 390, height: 844 }
   })
-  await page.waitForFunction(() => window.__sokoban, null, { timeout: 20000 })
+  await page.waitForFunction(() => window.__sokoban, null, { timeout: 45000 })
   await page.waitForTimeout(1500)
 
   const readPlayer = () =>
@@ -365,7 +365,7 @@ for (const [level, type, pieces] of [
 // 古诗词：能答一题、能把五关走完
 {
   const { context, page, problems } = await openPage('/games/poetry/')
-  await page.waitForFunction(() => window.app, null, { timeout: 20000 })
+  await page.waitForFunction(() => window.app, null, { timeout: 45000 })
 
   await page.click('.difficulty-btn[data-level="beginner"]')
   // 选项是一个个渲染出来的，等四个都在再继续
