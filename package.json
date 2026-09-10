@@ -1,0 +1,35 @@
+{
+  "name": "pintugame",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "拾趣小游戏 - 滑块拼图 / 推箱子 / 古诗词 三合一本地小游戏站",
+  "scripts": {
+    "sync:pixi": "node scripts/sync-pixi.mjs",
+    "predev": "node scripts/sync-pixi.mjs",
+    "dev": "vite",
+    "prebuild": "node scripts/sync-pixi.mjs",
+    "build": "tsc --noEmit -p tsconfig.json && vite build",
+    "preview": "vite preview",
+    "test:data": "node scripts/data-test.mjs",
+    "test:smoke": "node scripts/smoke-test.mjs",
+    "test:compat": "node scripts/compat-test.mjs"
+  },
+  "dependencies": {
+    "bezier-easing": "2.1.0",
+    "gsap": "3.11.5",
+    "lodash": "4.17.21",
+    "pixi.js": "4.8.5",
+    "three": "0.151.3"
+  },
+  "devDependencies": {
+    "@types/lodash": "4.14.202",
+    "@types/node": "20.11.30",
+    "@types/three": "0.151.0",
+    "autoprefixer": "10.4.19",
+    "postcss": "8.4.38",
+    "tailwindcss": "3.4.3",
+    "typescript": "5.4.5",
+    "vite": "5.4.10"
+  }
+}

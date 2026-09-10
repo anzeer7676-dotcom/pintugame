@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.DS_Store
+*.log
+.pnpm-store/
+*.zip
+
+# 由 scripts/sync-pixi.mjs 从 node_modules 复制而来
+public/games/sliding/vendor/

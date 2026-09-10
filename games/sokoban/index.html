@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>推箱子 · 拾趣小游戏</title>
+  <meta name="theme-color" content="#0b0f2b" />
+  <link rel="icon" type="image/png" sizes="64x64" href="../../assets/portal/favicon-64.png" />
+  <link rel="stylesheet" href="../../portal/portal.css" />
+</head>
+<body class="game-page">
+  <header class="site-bar">
+    <a class="pixel-btn" href="../../index.html">← 返回大厅</a>
+    <span class="site-bar__title">推箱子</span>
+    <span class="site-bar__hint">WASD / 方向键 / 滑动</span>
+  </header>
+
+  <div id="container"></div>
+
+  <audio id="audio" style="opacity: 0" class="fixed top-0 left-0 z-50" controls loop preload="none"></audio>
+
+  <ul class="top-bar fixed z-50 flex items-center justify-center px-4 bottom-4 left-4">
+    <li class="top-bar__item" id="refresh">
+      <img id="refreshImg" alt="重玩本关" />
+    </li>
+    <li class="top-bar__item" id="soundCtrl">
+      <img id="soundCtrlImg" alt="音乐开关" />
+    </li>
+  </ul>
+
+  <div class="dpad" id="dpad">
+    <button class="dpad__btn dpad__btn--up" data-direction="up" aria-label="向上推">▲</button>
+    <button class="dpad__btn dpad__btn--left" data-direction="left" aria-label="向左推">◀</button>
+    <button class="dpad__btn dpad__btn--right" data-direction="right" aria-label="向右推">▶</button>
+    <button class="dpad__btn dpad__btn--down" data-direction="down" aria-label="向下推">▼</button>
+  </div>
+
+  <script type="module" src="./src/main.tsx"></script>
+</body>
+</html>

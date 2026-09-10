@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>滑块拼图 · 拾趣小游戏</title>
+  <meta name="theme-color" content="#0b0f2b" />
+  <link rel="icon" type="image/png" sizes="64x64" href="../../assets/portal/favicon-64.png" />
+  <link rel="stylesheet" href="../../portal/portal.css" />
+</head>
+<body class="game-page">
+  <header class="site-bar">
+    <a class="pixel-btn" href="../../index.html">← 返回大厅</a>
+    <span class="site-bar__title">滑块拼图</span>
+    <span class="site-bar__hint">滑动 / 拖动 / 方向键</span>
+  </header>
+
+  <main class="stage-wrap">
+    <div class="stage" id="stage"></div>
+  </main>
+
+  <div class="boot" id="boot">
+    <div class="boot__panel">
+      <p class="boot__text" id="boot-text">载入中…</p>
+      <p class="boot__error" id="boot-error" hidden></p>
+    </div>
+  </div>
+
+  <script src="./vendor/pixi.min.js"></script>
+  <script type="module" src="./src/app.js"></script>
+</body>
+</html>

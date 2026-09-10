@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>拾趣小游戏 · 拼图 / 推箱子 / 古诗词</title>
+  <meta name="description" content="拾趣小游戏：滑块拼图、推箱子、古诗词三个经典小游戏，打开即玩，无需登录。" />
+  <meta name="theme-color" content="#0b0f2b" />
+  <link rel="icon" type="image/png" sizes="64x64" href="./assets/portal/favicon-64.png" />
+  <link rel="apple-touch-icon" href="./assets/portal/favicon-180.png" />
+  <link rel="stylesheet" href="./portal/portal.css" />
+</head>
+<body class="portal">
+  <div class="scanlines" aria-hidden="true"></div>
+
+  <header class="hero">
+    <img class="hero__bg" src="./assets/portal/hero.png" alt="" />
+    <div class="hero__shade" aria-hidden="true"></div>
+    <div class="hero__content">
+      <p class="hero__eyebrow">INSERT COIN · 3 GAMES</p>
+      <h1 class="hero__title"><span>拾趣</span>小游戏</h1>
+      <p class="hero__subtitle">滑动手指拼图、推箱子解谜、补全一句古诗 —— 三个经典玩法，打开即玩。</p>
+      <div class="hero__actions">
+        <a class="pixel-btn pixel-btn--primary" href="#games">开始游戏</a>
+        <span class="hero__note">键盘 / 触屏都能玩</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap" id="games">
+    <h2 class="section-title">选择游戏</h2>
+
+    <div class="cards">
+      <article class="card">
+        <div class="card__thumb">
+          <img src="./assets/portal/card-sliding.png" alt="滑块拼图" loading="lazy" />
+        </div>
+        <div class="card__body">
+          <h3 class="card__title">滑块拼图</h3>
+          <p class="card__desc">滑动方块还原整张图片，带计时、预览提示和重玩。</p>
+          <ul class="card__meta">
+            <li>3×3 / 4×4 / 5×5 三档难度</li>
+            <li>操作：滑动 · 鼠标拖动 · 方向键</li>
+          </ul>
+          <div class="card__actions">
+            <a class="pixel-btn pixel-btn--primary" href="./games/sliding/?level=easy">简单 3×3</a>
+            <a class="pixel-btn" href="./games/sliding/?level=middle">中等 4×4</a>
+            <a class="pixel-btn" href="./games/sliding/?level=hard">困难 5×5</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card__thumb">
+          <img src="./assets/portal/card-sokoban.png" alt="推箱子" loading="lazy" />
+        </div>
+        <div class="card__body">
+          <h3 class="card__title">推箱子</h3>
+          <p class="card__desc">3D 视角的推箱子，把箱子全部推到发光目标点上即可过关。</p>
+          <ul class="card__meta">
+            <li>3 个关卡，通关自动进入下一关</li>
+            <li>操作：WASD · 方向键 · 滑动 · 屏幕方向键</li>
+          </ul>
+          <div class="card__actions">
+            <a class="pixel-btn pixel-btn--primary" href="./games/sokoban/">开始推箱子</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card__thumb">
+          <img src="./assets/portal/card-poetry.png" alt="古诗词" loading="lazy" />
+        </div>
+        <div class="card__body">
+          <h3 class="card__title">古诗词</h3>
+          <p class="card__desc">补全缺掉的那一句古诗，连过五关看看能拿多少分。</p>
+          <ul class="card__meta">
+            <li>初级「诗句修复」5 关</li>
+            <li>操作：点选答案</li>
+          </ul>
+          <div class="card__actions">
+            <a class="pixel-btn pixel-btn--primary" href="./games/poetry/">开始答题</a>
+          </div>
+        </div>
+      </article>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p class="footer__title">参考来源</p>
+    <ul class="footer__links">
+      <li>
+        <a href="https://github.com/nanwangjkl/sliding_puzzle" target="_blank" rel="noreferrer">sliding_puzzle · 滑块拼图</a>
+      </li>
+      <li>
+        <a href="https://github.com/LiamWu50/three-sokoban-live" target="_blank" rel="noreferrer">three-sokoban-live · 推箱子</a>
+      </li>
+      <li>
+        <a href="https://github.com/mumunew/ancient-poetry-game" target="_blank" rel="noreferrer">ancient-poetry-game · 古诗词</a>
+      </li>
+    </ul>
+    <p class="footer__note">
+      本站为本地演示项目，三个游戏改造自上述开源仓库；上游仓库均未附带 LICENSE 文件，公开可浏览不等于已授权再分发，如需商用请先联系原作者获取授权。
+    </p>
+  </footer>
+
+  <script type="module" src="./portal/portal.js"></script>
+</body>
+</html>
