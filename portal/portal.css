@@ -410,7 +410,8 @@ a {
 .boot {
   position: fixed;
   inset: 0;
-  z-index: 40;
+  /* 必须低于 .site-bar(10)：加载素材的几秒里，顶部的「返回大厅」仍然要能点 */
+  z-index: 5;
   display: flex;
   align-items: center;
   justify-content: center;
