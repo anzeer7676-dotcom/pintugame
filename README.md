@@ -1,5 +1,9 @@
 # 拾趣小游戏
 
+**线上地址：<https://anzeer7676-dotcom.github.io/pintugame/>** —— 手机、平板、电脑浏览器都能直接打开玩。
+
+推送到 `main` 分支后，GitHub Actions 会自动构建并发布（见 `.github/workflows/deploy-pages.yml`），无需手动部署。
+
 一个纯静态的中文小游戏站：像素复古门户首页 + 三个独立游戏页面。
 
 - **滑块拼图**（pixi.js 4）—— 3×3 / 4×4 / 5×5 三档难度，滑动、鼠标拖动或方向键都能玩
