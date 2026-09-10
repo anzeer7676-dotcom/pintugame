@@ -1,2 +1,9 @@
+packages:
+  - '.'
+
+# pnpm 10/11 的构建设置（不同大版本字段名不同，两个都写上，互不冲突）
+onlyBuiltDependencies:
+  - esbuild
+
 allowBuilds:
   esbuild: true
